@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>REGISTRO_PAGADOS</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+       
+       
+    </head>
+
+    <body>
+        <div class="container mt-3">
+            <table class="table table-active">
+                <thead>
+                    <th>Num</th>
+                    <th>Pag.Inter:S/.</th>
+                    <th> Codigo</th>
+                    <th>Cancelado:S/.</th>
+                    <th>Alquiler</th>
+                    <th>Total:S</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+
+                </thead>
+                <tbody  id="tbody1"></tbody>
+            </table>
+        </div>
+
+        <script type="module">
+//--------FILLING THE TABLE ----------------------------------------//
+            var stdNo = 0;
+            var tbody = document.getElementById('tbody1');
+
+            function AddItemToTable(nombre, roll,sec,gen,tal,fec,hor) {
+                let trow = document.createElement("tr");
+                let td1 = document.createElement('td');
+                let td2 = document.createElement('td');
+                let td3 = document.createElement('td');
+                let td4 = document.createElement('td');
+                let td5 = document.createElement('td');
+                let td6 = document.createElement('td');
+                let td7 = document.createElement('td');
+                let td8 = document.createElement('td');
+
+                
+                td1.innerHTML = ++stdNo;
+                td2.innerHTML = nombre;
+                td3.innerHTML = roll;
+                td4.innerHTML = sec;
+                td5.innerHTML = gen;
+                td6.innerHTML = tal;
+                td7.innerHTML = fec;
+                td8.innerHTML = hor;
+
+
+                trow.appendChild(td1);
+                trow.appendChild(td2);
+                trow.appendChild(td3);
+                trow.appendChild(td4);
+                trow.appendChild(td5);
+                trow.appendChild(td6);
+                trow.appendChild(td7);
+                trow.appendChild(td8);
+                
+                tbody.appendChild(trow);
+            }
+
+            function AddAllItemsToTable(TheStudent){
+                stdNo = 0;
+                tbody.innerHTML="";
+                TheStudent.forEach(element => {
+                    AddItemToTable(
+                        element.NombreOfStd,
+                        element.RollNo,
+                        element.Section,
+                        element.Gender,
+                        element.Total,
+                        element.Fecha,
+                        element.Hora)
+                });
+            }
+
+
+
+
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-analytics.js";
+
+
+
+                const firebaseConfig = {
+                apiKey: "AIzaSyARHbPKE0nkLXbh2E5nkBdO-wR5LerSM5s",
+                authDomain: "examen-pooii-lucio-cesar-lopez.firebaseapp.com",
+                databaseURL: "https://examen-pooii-lucio-cesar-lopez-default-rtdb.firebaseio.com",
+                projectId: "examen-pooii-lucio-cesar-lopez",
+                storageBucket: "examen-pooii-lucio-cesar-lopez.appspot.com",
+                messagingSenderId: "713295959949",
+                appId: "1:713295959949:web:d5f9774fb3f59ad7fc4fc4",
+                measurementId: "G-WYKPT9V0KX"
+                };
+
+                // Initialize Firebase
+                const app = initializeApp(firebaseConfig);
+
+            
+            import {getDatabase, ref, child, onValue, get }
+            from "https://www.gstatic.com/firebasejs/9.4.1/firebase-database.js";
+
+            const db = getDatabase();
+
+
+
+
+//--------GETTING ALL DATA ----------------------------------------//           
+
+            function GetAllDataOnce(){
+                const dbRef = ref(db);
+
+                get (child(dbRef, "RegistroAlquilerPro"))
+                .then((snapshot)=>{
+
+                var students =[];
+                
+                snapshot.forEach(childSnapshot => {
+                    students.push(childSnapshot.val());
+
+                });
+
+                AddAllItemsToTable(students);
+            });
+        }
+
+
+        function GetAllDataRealtime(){
+
+                const dbRef = ref(db, "RegistroAlquilerPro");
+
+                onValue(dbRef,(snapshot)=>{
+
+                    var students =[];
+                
+                snapshot.forEach(childSnapshot =>{
+                    students.push(childSnapshot.val());
+
+                });
+
+                AddAllItemsToTable(students);
+            })
+        }
+
+        window.onload = GetAllDataOnce;
+
+
+        </script>
+  
+    </body>
+
+</html>
