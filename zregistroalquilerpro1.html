@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pago_de_Alquiler</title>
+
+        <style>
+            label{display:inline-block; width: 80px}
+            input,select{width: 120;}
+        </style>
+
+    </head>
+
+    <body>
+        <label>Pag.Inter:S/.</label> 
+        <input id="Nombrebox" type="number"> <br><br>
+
+        <label>Codigo</label>
+         <input id="Rollbox" type="number"> <br><br>
+
+        <label>Cancelado:S/.</label> 
+        <input id="Secbox" type="text"> <br><br>
+
+        <label>Total:S/.</label> 
+        <input id="Talbox" type="text"> <br><br>
+
+        <label>Fecha</label> 
+        <input id="Fecbox" type="date"> <br><br>
+
+        <label>Hora</label> 
+        <input id="Horbox" type="time"> <br><br>
+
+        <label>Aquiler</label>
+            <select id="Genbox">
+                <option value="FABRICA">Fabrica</option>
+                <option value="BOTICA">Botica</option>
+                <option value="CARPINTERIA">Carpinteria</option>
+                <option value="VACIO04">vacio04</option>
+                <option value="VACIO5">vacio05</option>        
+            </select>
+
+        <hr>
+
+        <button id="Insbtn">INSERTAR</button>
+        <button id="Selbtn">COD_SELECIONAR</button>
+        <button id="Updbtn">CREAR</button>
+        <button id="Delbtn">ELEMINAR</button>
+
+
+
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-analytics.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+          
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+                apiKey: "AIzaSyARHbPKE0nkLXbh2E5nkBdO-wR5LerSM5s",
+                authDomain: "examen-pooii-lucio-cesar-lopez.firebaseapp.com",
+                databaseURL: "https://examen-pooii-lucio-cesar-lopez-default-rtdb.firebaseio.com",
+                projectId: "examen-pooii-lucio-cesar-lopez",
+                storageBucket: "examen-pooii-lucio-cesar-lopez.appspot.com",
+                messagingSenderId: "713295959949",
+                appId: "1:713295959949:web:d5f9774fb3f59ad7fc4fc4",
+                measurementId: "G-WYKPT9V0KX"
+  };
+          
+   
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+
+            import {getDatabase, ref, get, set, child, update, remove}
+            from "https://www.gstatic.com/firebasejs/9.4.0/firebase-database.js";
+            const db = getDatabase();
+
+//--------References----------------------------------------//
+
+            var nombrebox = document.getElementById("Nombrebox");
+            var rollbox = document.getElementById("Rollbox");
+            var secbox = document.getElementById("Secbox");
+            var genbox = document.getElementById("Genbox");
+            var talbox = document.getElementById("Talbox");
+            var fecbox = document.getElementById("Fecbox");
+            var horbox = document.getElementById("Horbox");
+
+
+            var insBtn = document.getElementById("Insbtn");
+            var selBtn = document.getElementById("Selbtn");
+            var updBtn = document.getElementById("Updbtn");
+            var delBtn = document.getElementById("Delbtn");
+            var tolBtn = document.getElementById("Tolbtn");
+            var fecBtn = document.getElementById("Fecbtn");
+            var horBtn = document.getElementById("Horbtn");
+
+//--------INSERT DATA FUNCTION----------------------------------------//
+
+            function InsertData(){
+                set(ref(db, "RegistroAlquilerPro/"+ rollbox.value),{
+                    NombreOfStd: nombrebox.value,
+                    RollNo: rollbox.value,
+                    Section: secbox.value,
+                    Gender: genbox.value,
+                    Total: talbox.value,
+                    Fecha: fecbox.value,
+                    Hora: horbox.value,
+                })
+                .then(()=>{
+                    alert("data stored successfully");         
+                })
+                .catch((error)=>{
+                    alert("unsuccessful, error"+error);
+                });
+            }
+//--------SELECT DATA FUNCTION----------------------------------------//
+
+            function SelectData(){
+                const dbref = ref(db);
+
+                get(child(dbref,"RegistroAlquilerPro/"+ rollbox.value)).then((snapshot)=>{
+                    if(snapshot.exists()){
+                        nombrebox.value = snapshot.val().NombreOfStd;
+                        secbox.value = snapshot.val().Section;
+                        genbox.value = snapshot.val().Gender;
+                        talbox.value = snapshot.val().Total;
+                        fecbox.value = snapshot.val().Total;
+                        horbox.value = snapshot.val().Total;
+                    }
+
+                    else{
+                        alert("No data found");
+                    }
+
+                })
+                .catch((error)=>{
+                    alert("unsuccessful, error"+error);
+                });
+              }
+
+
+//--------UPDATE DATA FUNCTION----------------------------------------//
+
+              function UpdateData(){
+                update(ref(db, "RegistroAlquilerPro/"+ rollbox.value),{
+                    NameOfStd: nombrebox.value,
+                    Section: secbox.value,
+                    Gender: genbox.value,
+                    Total: talbox.value,
+                    fecha: fecbox.value,
+                    hora: horbox.value,
+                })
+                .then(()=>{
+                    alert("data updated successfully");         
+                })
+                .catch((error)=>{
+                    alert("unsuccessful, error"+error);
+                });
+            }
+
+//--------DELETE DATA FUNCTION----------------------------------------//
+
+function DeleteData(){
+                remove(ref(db, "RegistroAlquilerPro/"+ rollbox.value))
+                .then(()=>{
+                    alert("data removed successfully");         
+                })
+                .catch((error)=>{
+                    alert("unsuccessful, error"+error);
+                });
+            }
+
+
+//--------ASSIGN EVENTS TO BTns----------------------------------------//
+
+
+            insBtn.addEventListener('click', InsertData);
+            selBtn.addEventListener('click', SelectData);
+            updBtn.addEventListener('click', UpdateData);
+            delBtn.addEventListener('click', DeleteData);
+           
+
+          </script>
+
+    </body>
+
+</html>
